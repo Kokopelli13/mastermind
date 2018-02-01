@@ -1,0 +1,63 @@
+from collections import Counter
+
+
+class Game:
+    """docstring for Game."""
+    _totalGames = 0
+
+    def __init__(self):
+        Game._totalGames += 1
+        self.solution = ''
+        self.guesses = []
+        self.didWin = False
+
+    @staticmethod
+    def compareCodes(code1, code2):
+        # Finds the total amount of pegs cleverly
+        totalPegs = sum((Counter(code1) & Counter(code2)).values())
+        blackPegs = 0
+        for i in range(0, len(code1)):
+            if (code1[i] == code2[i]):
+                blackPegs += 1
+        whitePegs = totalPegs - blackPegs
+        return blackPegs, whitePegs
+
+    def validateGuess(codeGuess):
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def generateSolution():
+        raise NotImplementedError("Subclass must implement abstract method")
+
+    def makeGuess():
+        raise NotImplementedError("Subclass must implement abstract method")
+
+
+class UserGame(Game):
+    """docstring for UserGame."""
+    def __init__(self):
+        super(UserGame, self).__init__()
+
+    # def validateGuess(codeGuess):
+    #
+    #
+    # def generateSolution():
+    #
+    #
+    # def makeGuess():
+
+
+class ComputerGame(Game):
+    """docstring for ComputerGame."""
+    def __init__(self):
+        super(ComputerGame, self).__init__()
+
+    # def validateGuess(codeGuess):
+    #
+    #
+    # def generateSolution():
+    #
+    #
+    # def makeGuess():
+
+
+# print(Game.compareCodes("abcd", "accd"))
