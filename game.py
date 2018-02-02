@@ -5,8 +5,14 @@ class Game:
     """docstring for Game."""
     _totalGames = 0
 
-    def __init__(self):
+    def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game._totalGames += 1
+        if (symbolList is None):
+            self.symbolList = ['R', 'G', 'B', 'W', 'Y', 'O']
+        else:
+            self.symbolList = symbolList
+        self.codeLength = codeLength
+        self.maxGuesses = maxGuesses
         self.solution = ''
         self.guesses = []
         self.didWin = False
@@ -60,4 +66,12 @@ class ComputerGame(Game):
     # def makeGuess():
 
 
-# print(Game.compareCodes("abcd", "accd"))
+def test():
+    game = Game()
+    print("Code Length: " + str(game.codeLength))
+    print("Max Guesses: " + str(game.maxGuesses))
+    print("Symbols: " + str(game.symbolList))
+
+
+if (__name__ == "__main__"):
+    test()
