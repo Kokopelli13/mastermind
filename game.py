@@ -30,12 +30,24 @@ class Game:
                 blackPegs += 1
         whitePegs = totalPegs - blackPegs
         return blackPegs, whitePegs
-
-    def validateGuess(codeGuess):
-        raise NotImplementedError("Subclass must implement abstract method")
-
-    def generateSolution():
-        raise NotImplementedError("Subclass must implement abstract method")
+    @staticmethod
+    def validateGuess(codeGuess,self):
+        import re
+        pattern = r'[^RBGYPO]'
+        if (len(codeGuess) != self.codeLength):
+            return (False)
+        for i in range(0, 4):
+            if (re.search(pattern, codeGuess[i])):
+                return (False)
+        return (True)
+    @staticmethod
+    def generateSolution(self):
+        import random
+        codeString = ["", "", "", ""]
+        for i in range(0, 4):
+            codeString[i] = random.choice(self.symbolList)
+        print(codeString)
+        return (codeString)
 
     def makeGuess():
         raise NotImplementedError("Subclass must implement abstract method")
@@ -74,7 +86,7 @@ def test():
     print("Code Length: " + str(game.codeLength))
     print("Max Guesses: " + str(game.maxGuesses))
     print("Symbols: " + str(game.symbolList))
-
+    
 
 if (__name__ == "__main__"):
     test()
