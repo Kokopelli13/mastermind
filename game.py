@@ -1,5 +1,4 @@
 from collections import Counter
-import printer
 
 
 class Game:
@@ -18,7 +17,6 @@ class Game:
         # using a tuple for now ("RGBY", (1,2)) -> (code, (whitePegs, blackPegs))
         self.guesses = []
         self.didWin = False
-        self.printer = printer.Printer(self)
 
     @staticmethod
     def compareCodes(code1, code2):
@@ -86,7 +84,7 @@ def test():
     print("Code Length: " + str(game.codeLength))
     print("Max Guesses: " + str(game.maxGuesses))
     print("Symbols: " + str(game.symbolList))
-    
+
 
 if (__name__ == "__main__"):
     test()

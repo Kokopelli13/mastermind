@@ -9,7 +9,8 @@ class Printer:
 2) Play as code breaker"
 3) Play as mastermind"
 4) Game statistics
-5) Quit"""
+5) Quit
+"""
     # Instructions
     instructions = """
 How to play:
@@ -42,7 +43,7 @@ turns, otherwise the mastermind wins.
         self.game = game
 
     def printMenu(self):
-        print(self.menu)
+        sys.stdout.write(self.menu)
 
     #prints the game board using the guesses[] array from the gaem object
     def printGame(self):
