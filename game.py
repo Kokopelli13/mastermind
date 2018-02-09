@@ -14,6 +14,7 @@ class Game:
         self.codeLength = codeLength
         self.maxGuesses = maxGuesses
         self.solution = ''
+        # using a tuple for now ("RGBY", (1,2))->(code, (whitePegs, blackPegs))
         self.guesses = []
         self.didWin = False
 
@@ -28,10 +29,15 @@ class Game:
         whitePegs = totalPegs - blackPegs
         return blackPegs, whitePegs
 
-    def validateGuess(codeGuess):
-        raise NotImplementedError("Subclass must implement abstract method")
+    def validateGuess(self, codeGuess):
+        if (len(codeGuess) != self.codeLength):
+            return (False)
+        for i in range(0, 4):
+            if codeGuess[i] not in self.symbolList:
+                return (False)
+        return (True)
 
-    def generateSolution():
+    def generateSolution(self):
         raise NotImplementedError("Subclass must implement abstract method")
 
     def makeGuess():
@@ -40,13 +46,19 @@ class Game:
 
 class UserGame(Game):
     """docstring for UserGame."""
-    def __init__(self):
-        super(UserGame, self).__init__()
+    def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
+        Game.__init__(self, codeLength, maxGuesses, symbolList)
 
     # def validateGuess(codeGuess):
     #
     #
-    # def generateSolution():
+    def generateSolution(self):
+        import random
+        codeString = ""
+        for i in range(0, self.codeLength):
+            codeString += random.choice(self.symbolList)
+        print(codeString)
+        self.solution = codeString
     #
     #
     # def makeGuess():
@@ -54,8 +66,8 @@ class UserGame(Game):
 
 class ComputerGame(Game):
     """docstring for ComputerGame."""
-    def __init__(self):
-        super(ComputerGame, self).__init__()
+    def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
+        Game.__init__(self, codeLength, maxGuesses, symbolList)
 
     # def validateGuess(codeGuess):
     #
@@ -67,7 +79,9 @@ class ComputerGame(Game):
 
 
 def test():
-    game = Game()
+    game = UserGame()
+    game.generateSolution()
+    print(game.validateGuess(game.solution))
     print("Code Length: " + str(game.codeLength))
     print("Max Guesses: " + str(game.maxGuesses))
     print("Symbols: " + str(game.symbolList))
