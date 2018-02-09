@@ -5,6 +5,8 @@ import printer
 class Game:
     """docstring for Game."""
     _totalGames = 0
+    _totalWins = 0
+    _totalGuesses = 0
 
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game._totalGames += 1

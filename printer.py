@@ -1,5 +1,5 @@
 import sys
-
+import game
 
 class Printer:
     """docstring"""
@@ -30,8 +30,9 @@ turns, otherwise the mastermind wins.
 """
     # Stats
     stat1 = "Total number of games played: "
-    stat2 = "Percentage won: "
-    stat3 = "Favorite color: "
+    stat2 = "Total number of games won: "
+    stat3 = "Total number of guesses: "
+    stat4 = "Average number of guesses per game: "
     # Board
     boardTopBottom = "-"*20
     boardSide = "|"
@@ -41,7 +42,8 @@ turns, otherwise the mastermind wins.
     def __init__(self, game):
         self.game = game
 
-    def printMenu(self):
+    @staticmethod
+    def printMenu():
         print(Printer.menu)
 
     #prints the game board using the guesses[] array from the gaem object
@@ -58,30 +60,39 @@ turns, otherwise the mastermind wins.
             #the guessed code
             for i in range(0, len(guess)):
                 sys.stdout.write(' ' + guess[i])
-            sys.stdout.write(' ' + self.boardSide)
+            sys.stdout.write(' ' + Printer.boardSide)
             #pegs
             for i in range(0, pegs[0]):
-                sys.stdout.write(' ' + self.whitePeg)
+                sys.stdout.write(' ' + Printer.whitePeg)
             for i in range(0, pegs[1]):
-                sys.stdout.write(' ' + self.blackPeg)
+                sys.stdout.write(' ' + Printer.blackPeg)
             for i in range(0, 4 - (pegs[0] + pegs[1])):
                 sys.stdout.write('  ')
-            print(' ' + self.boardSide)
+            print(' ' + Printer.boardSide)
         #remaining blank lines
         for i in range(0, self.game.maxGuesses - len(self.game.guesses)):
-            print(' ' + self.boardSide + ' '*19 + self.boardSide)
+            print(' ' + Printer.boardSide + ' '*19 + Printer.boardSide)
         #board bottom
-        print(' ' + self.boardTopBottom)
+        print(' ' + Printer.boardTopBottom)
 
-    def printInstructions(self):
-        print(self.instructions)
+    @staticmethod
+    def printInstructions():
+        print(Printer.instructions)
         raw_input("Press Enter to continue...")
 
-    def printStats(self):
-        print(self.stat1 + str(self.game._totalGames))
-        print(self.stat2)
-        print(self.stat3)
-        print('')
+    @staticmethod
+    def printStats():
+        if(game.Game._totalGames == 0):
+            print("You have not played any games")
+            raw_input("Press Enter to continue...")
+        else:
+            print('')
+            print(Printer.stat1 + str(game.Game._totalGames))
+            print(Printer.stat2 + str(game.Game._totalWins))
+            print(Printer.stat3 + str(game.Game._totalGuesses))
+            print(Printer.stat4 + str(1.0*game.Game._totalGuesses/game.Game._totalGames))
+            print('')
+            raw_input("Press Enter to continue...")
 
     def printTurn(self):
         print('a')
