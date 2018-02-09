@@ -6,8 +6,8 @@ class Printer:
     # Menu
     menu = """
 1) How to play
-2) Play as code breaker"
-3) Play as mastermind"
+2) Play as code breaker
+3) Play as mastermind
 4) Game statistics
 5) Quit
 """
@@ -38,12 +38,11 @@ turns, otherwise the mastermind wins.
     whitePeg = "-"
     blackPeg = "+"
 
-
     def __init__(self, game):
         self.game = game
 
     def printMenu(self):
-        sys.stdout.write(self.menu)
+        print(Printer.menu)
 
     #prints the game board using the guesses[] array from the gaem object
     def printGame(self):
@@ -51,11 +50,11 @@ turns, otherwise the mastermind wins.
         print('Mastermind')
         print('Turn #' + str(len(self.game.guesses)))
         #top of the board
-        print(' ' + self.boardTopBottom)
+        print(' ' + Printer.boardTopBottom)
         #lines with guesses
         for guess, pegs in self.game.guesses:
             #left side
-            sys.stdout.write(' ' + self.boardSide)
+            sys.stdout.write(' ' + Printer.boardSide)
             #the guessed code
             for i in range(0, len(guess)):
                 sys.stdout.write(' ' + guess[i])
@@ -72,16 +71,32 @@ turns, otherwise the mastermind wins.
         for i in range(0, self.game.maxGuesses - len(self.game.guesses)):
             print(' ' + self.boardSide + ' '*19 + self.boardSide)
         #board bottom
-        print(self.boardTopBottom)
-
+        print(' ' + self.boardTopBottom)
 
     def printInstructions(self):
         print(self.instructions)
+        raw_input("Press Enter to continue...")
 
     def printStats(self):
         print(self.stat1 + str(self.game._totalGames))
         print(self.stat2)
         print(self.stat3)
+        print('')
 
     def printTurn(self):
         print('a')
+
+
+def test():
+    import game
+    game1 = game.Game()
+    printer = Printer(game1)
+    printer.printMenu()
+    printer.printInstructions()
+    printer.printStats()
+    game1.guesses.append(('RGBW', (1,2)))
+    printer.printGame()
+
+
+if (__name__ == "__main__"):
+    test()

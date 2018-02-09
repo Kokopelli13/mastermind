@@ -1,4 +1,5 @@
 from collections import Counter
+import printer
 
 
 class Game:
@@ -17,6 +18,7 @@ class Game:
         # using a tuple for now ("RGBY", (1,2)) -> (code, (whitePegs, blackPegs))
         self.guesses = []
         self.didWin = False
+        self.printer = printer.Printer(self)
 
     @staticmethod
     def compareCodes(code1, code2):
@@ -28,6 +30,7 @@ class Game:
                 blackPegs += 1
         whitePegs = totalPegs - blackPegs
         return blackPegs, whitePegs
+
     @staticmethod
     def validateGuess(codeGuess,self):
         import re
@@ -38,6 +41,7 @@ class Game:
             if (re.search(pattern, codeGuess[i])):
                 return (False)
         return (True)
+
     @staticmethod
     def generateSolution(self):
         import random
