@@ -32,6 +32,21 @@ def mainMenu():
 
 def playGame(currentGame):
     currentGame.generateSolution()
+    for x in range(currentGame.maxGuesses):
+        currentGame.printer.printGame()
+        currentGame.makeGuess()
+        if(currentGame.didWin):
+            break
+    currentGame.printer.printGame()
+    if(currentGame.didWin):
+        print("Congratulations! You Win!!")
+    else:
+        print("You ran out of guesses...")
+        print("The correct code was: " + currentGame.solution)
+    if sys.version_info[0] < 3:
+        raw_input(printer.Printer.continueText)
+    else:
+        input(printer.Printer.continueText)
 
 
 if (__name__ == "__main__"):

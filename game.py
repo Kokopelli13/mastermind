@@ -1,5 +1,6 @@
 from collections import Counter
 import printer
+import sys
 
 
 class Game:
@@ -36,15 +37,20 @@ class Game:
     def validateGuess(self, codeGuess):
         if (len(codeGuess) != self.codeLength):
             return (False)
-        for i in range(0, 4):
+        for i in range(0, self.codeLength):
             if codeGuess[i] not in self.symbolList:
                 return (False)
         return (True)
 
+    def winGame(self):
+        self.didWin = True
+        Game._totalWins += 1
+        Game._totalGuesses += len(self.guesses)
+
     def generateSolution(self):
         raise NotImplementedError("Subclass must implement abstract method")
 
-    def makeGuess():
+    def makeGuess(self):
         raise NotImplementedError("Subclass must implement abstract method")
 
 
@@ -53,19 +59,30 @@ class UserGame(Game):
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
 
-    # def validateGuess(codeGuess):
-    #
-    #
     def generateSolution(self):
         import random
         codeString = ""
         for i in range(0, self.codeLength):
             codeString += random.choice(self.symbolList)
-        print(codeString)
+        # print(codeString)
         self.solution = codeString
-    #
-    #
-    # def makeGuess():
+
+    def makeGuess(self):
+        if sys.version_info[0] < 3:
+            codeGuess = raw_input("Make a Guess:")
+        else:
+            codeGuess = input("Make a Guess:")
+        codeGuess = codeGuess.upper()
+        while not self.validateGuess(codeGuess):
+            if sys.version_info[0] < 3:
+                codeGuess = raw_input("Invalid Guess. Try again:")
+            else:
+                codeGuess = input("Invalid Guess. Try again:")
+            codeGuess = codeGuess.upper()
+        blackPegs, whitePegs = Game.compareCodes(codeGuess, self.solution)
+        self.guesses.append((codeGuess, (blackPegs, whitePegs)))
+        if blackPegs is self.codeLength:
+            self.winGame()
 
 
 class ComputerGame(Game):
@@ -73,11 +90,19 @@ class ComputerGame(Game):
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
 
-    # def validateGuess(codeGuess):
-    #
-    #
-    # def generateSolution():
-    #
+    def generateSolution(self):
+        if sys.version_info[0] < 3:
+            codeSolution = raw_input("Enter a solution:")
+        else:
+            codeSolution = input("Enter a solution:")
+        codeSolution = codeSolution.upper()
+        while not self.validateGuess(codeSolution):
+            if sys.version_info[0] < 3:
+                codeSolution = raw_input("Invalid Code. Try again:")
+            else:
+                codeSolution = input("Invalid Code. Try again:")
+                codeSolution = codeSolution.upper()
+        self.solution = codeSolution
     #
     # def makeGuess():
 
