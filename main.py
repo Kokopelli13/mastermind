@@ -1,6 +1,7 @@
 import game
 import printer
 import re
+import sys
 
 
 def main():
@@ -23,9 +24,9 @@ def main():
 
 def mainMenu():
     printer.Printer.printMenu()
-    ans = raw_input('Pick an option: ')
+    ans = string_input('Pick an option: ')
     while((not re.match('[12345]{1}', ans)) or len(ans) > 1):
-        ans = raw_input('Please make a valid selection: ')
+        ans = string_input('Please make a valid selection: ')
     return int(ans)
 
 
@@ -34,4 +35,8 @@ def playGame(currentGame):
 
 
 if (__name__ == "__main__"):
+    if sys.version_info[0] < 3:
+        string_input = raw_input
+    else:
+        string_input = input
     main()

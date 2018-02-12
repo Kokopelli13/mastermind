@@ -7,6 +7,7 @@ import game
 >>>>>>> master
 class Printer:
     """docstring"""
+
     # Menu
     menu = """
 1) How to play
@@ -18,6 +19,7 @@ class Printer:
     # Instructions
     instructions = """
 How to play:
+
 1) The mastermind selects a combination of colored pegs (a code) and the code
 breaker attemps to guess that code in fewer than the specified number of turns.
 
@@ -46,6 +48,8 @@ turns, otherwise the mastermind wins.
     boardSide = "|"
     whitePeg = "-"
     blackPeg = "+"
+    # Other
+    continueText = "Press Enter to continue..."
 
     def __init__(self, game):
         self.game = game
@@ -112,13 +116,19 @@ turns, otherwise the mastermind wins.
     @staticmethod
     def printInstructions():
         print(Printer.instructions)
-        raw_input("Press Enter to continue...")
+        if sys.version_info[0] < 3:
+            raw_input(Printer.continueText)
+        else:
+            input(Printer.continueText)
 
     @staticmethod
     def printStats():
         if(game.Game._totalGames == 0):
             print("You have not played any games")
-            raw_input("Press Enter to continue...")
+            if sys.version_info[0] < 3:
+                raw_input(Printer.continueText)
+            else:
+                input(Printer.continueText)
         else:
             print('')
             print(Printer.stat1 + str(game.Game._totalGames))
@@ -131,7 +141,10 @@ turns, otherwise the mastermind wins.
             print(Printer.stat4 + str(1.0*game.Game._totalGuesses/game.Game._totalGames))
 >>>>>>> master
             print('')
-            raw_input("Press Enter to continue...")
+            if sys.version_info[0] < 3:
+                raw_input(Printer.continueText)
+            else:
+                input(Printer.continueText)
 
     def printTurn(self):
         print('a')
