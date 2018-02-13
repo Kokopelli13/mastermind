@@ -1,6 +1,11 @@
 import sys
 import game
 
+if sys.version_info[0] < 3:
+    string_input = raw_input
+else:
+    string_input = input
+
 
 class Printer:
     """docstring"""
@@ -56,6 +61,7 @@ turns, otherwise the mastermind wins.
         # header
         print('Mastermind')
         print('Turn #' + str(len(self.game.guesses)))
+        print('Colors: ' + str(self.game.symbolList))
         # top of the board
         print(' ' + Printer.boardTopBottom)
         # lines with guesses
@@ -83,19 +89,13 @@ turns, otherwise the mastermind wins.
     @staticmethod
     def printInstructions():
         print(Printer.instructions)
-        if sys.version_info[0] < 3:
-            raw_input(Printer.continueText)
-        else:
-            input(Printer.continueText)
+        string_input(Printer.continueText)
 
     @staticmethod
     def printStats():
         if(game.Game._totalGames == 0):
             print("You have not played any games")
-            if sys.version_info[0] < 3:
-                raw_input(Printer.continueText)
-            else:
-                input(Printer.continueText)
+            string_input(Printer.continueText)
         else:
             print('')
             print(Printer.stat1 + str(game.Game._totalGames))
@@ -104,10 +104,7 @@ turns, otherwise the mastermind wins.
             print(Printer.stat4 +
                   str(1.0 * game.Game._totalGuesses / game.Game._totalGames))
             print('')
-            if sys.version_info[0] < 3:
-                raw_input(Printer.continueText)
-            else:
-                input(Printer.continueText)
+            string_input(Printer.continueText)
 
     def printTurn(self):
         print('a')

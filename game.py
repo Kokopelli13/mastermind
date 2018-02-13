@@ -2,6 +2,11 @@ from collections import Counter
 import printer
 import sys
 
+if sys.version_info[0] < 3:
+    string_input = raw_input
+else:
+    string_input = input
+
 
 class Game:
     """docstring for Game."""
@@ -18,7 +23,7 @@ class Game:
         self.codeLength = codeLength
         self.maxGuesses = maxGuesses
         self.solution = ''
-        # using a tuple for now ("RGBY", (1,2))->(code, (whitePegs, blackPegs))
+        # using a tuple ("RGBY", (1,2)) -> (code, (blackPegs, whitePegs))
         self.guesses = []
         self.didWin = False
         self.printer = printer.Printer(self)
@@ -42,10 +47,17 @@ class Game:
                 return (False)
         return (True)
 
-    def winGame(self):
-        self.didWin = True
-        Game._totalWins += 1
+    def endGame(self, didWin):
+        self.didWin = didWin
+        if didWin:
+            Game._totalWins += 1
         Game._totalGuesses += len(self.guesses)
+        if(didWin):
+            print("Congratulations! You Win!!")
+        else:
+            print("You ran out of guesses...")
+            print("The correct code was: " + self.solution)
+        string_input(printer.Printer.continueText)
 
     def generateSolution(self):
         raise NotImplementedError("Subclass must implement abstract method")
@@ -68,21 +80,13 @@ class UserGame(Game):
         self.solution = codeString
 
     def makeGuess(self):
-        if sys.version_info[0] < 3:
-            codeGuess = raw_input("Make a Guess:")
-        else:
-            codeGuess = input("Make a Guess:")
-        codeGuess = codeGuess.upper()
+        codeGuess = string_input("Make a Guess:").upper()
         while not self.validateGuess(codeGuess):
-            if sys.version_info[0] < 3:
-                codeGuess = raw_input("Invalid Guess. Try again:")
-            else:
-                codeGuess = input("Invalid Guess. Try again:")
-            codeGuess = codeGuess.upper()
+            codeGuess = string_input("Invalid Guess. Try again:").upper()
         blackPegs, whitePegs = Game.compareCodes(codeGuess, self.solution)
         self.guesses.append((codeGuess, (blackPegs, whitePegs)))
         if blackPegs is self.codeLength:
-            self.winGame()
+            return True
 
 
 class ComputerGame(Game):
@@ -91,17 +95,9 @@ class ComputerGame(Game):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
 
     def generateSolution(self):
-        if sys.version_info[0] < 3:
-            codeSolution = raw_input("Enter a solution:")
-        else:
-            codeSolution = input("Enter a solution:")
-        codeSolution = codeSolution.upper()
+        codeSolution = string_input("Enter a solution:").upper()
         while not self.validateGuess(codeSolution):
-            if sys.version_info[0] < 3:
-                codeSolution = raw_input("Invalid Code. Try again:")
-            else:
-                codeSolution = input("Invalid Code. Try again:")
-                codeSolution = codeSolution.upper()
+            codeSolution = string_input("Invalid Code. Try again:").upper()
         self.solution = codeSolution
     #
     # def makeGuess():
