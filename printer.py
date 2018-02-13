@@ -1,18 +1,21 @@
 import sys
-
+import game
 
 class Printer:
     """docstring"""
+
     # Menu
     menu = """
 1) How to play
-2) Play as code breaker"
-3) Play as mastermind"
+2) Play as code breaker
+3) Play as mastermind
 4) Game statistics
-5) Quit"""
+5) Quit
+"""
     # Instructions
     instructions = """
 How to play:
+
 1) The mastermind selects a combination of colored pegs (a code) and the code
 breaker attemps to guess that code in fewer than the specified number of turns.
 
@@ -29,20 +32,23 @@ turns, otherwise the mastermind wins.
 """
     # Stats
     stat1 = "Total number of games played: "
-    stat2 = "Percentage won: "
-    stat3 = "Favorite color: "
+    stat2 = "Total number of games won: "
+    stat3 = "Total number of guesses: "
+    stat4 = "Average number of guesses per game: "
     # Board
     boardTopBottom = "-"*20
     boardSide = "|"
     whitePeg = "-"
     blackPeg = "+"
-
+    # Other
+    continueText = "Press Enter to continue..."
 
     def __init__(self, game):
         self.game = game
 
-    def printMenu(self):
-        print(self.menu)
+    @staticmethod
+    def printMenu():
+        print(Printer.menu)
 
     #prints the game board using the guesses[] array from the gaem object
     def printGame(self):
@@ -50,37 +56,71 @@ turns, otherwise the mastermind wins.
         print('Mastermind')
         print('Turn #' + str(len(self.game.guesses)))
         #top of the board
-        print(' ' + self.boardTopBottom)
+        print(' ' + Printer.boardTopBottom)
         #lines with guesses
         for guess, pegs in self.game.guesses:
             #left side
-            sys.stdout.write(' ' + self.boardSide)
+            sys.stdout.write(' ' + Printer.boardSide)
             #the guessed code
             for i in range(0, len(guess)):
                 sys.stdout.write(' ' + guess[i])
-            sys.stdout.write(' ' + self.boardSide)
+            sys.stdout.write(' ' + Printer.boardSide)
             #pegs
             for i in range(0, pegs[0]):
-                sys.stdout.write(' ' + self.whitePeg)
+                sys.stdout.write(' ' + Printer.whitePeg)
             for i in range(0, pegs[1]):
-                sys.stdout.write(' ' + self.blackPeg)
+                sys.stdout.write(' ' + Printer.blackPeg)
             for i in range(0, 4 - (pegs[0] + pegs[1])):
                 sys.stdout.write('  ')
-            print(' ' + self.boardSide)
+            print(' ' + Printer.boardSide)
         #remaining blank lines
         for i in range(0, self.game.maxGuesses - len(self.game.guesses)):
-            print(' ' + self.boardSide + ' '*19 + self.boardSide)
+            print(' ' + Printer.boardSide + ' '*19 + Printer.boardSide)
         #board bottom
-        print(self.boardTopBottom)
+        print(' ' + Printer.boardTopBottom)
 
+    @staticmethod
+    def printInstructions():
+        print(Printer.instructions)
+        if sys.version_info[0] < 3:
+            raw_input(Printer.continueText)
+        else:
+            input(Printer.continueText)
 
-    def printInstructions(self):
-        print(self.instructions)
-
-    def printStats(self):
-        print(self.stat1 + str(self.game._totalGames))
-        print(self.stat2)
-        print(self.stat3)
+    @staticmethod
+    def printStats():
+        if(game.Game._totalGames == 0):
+            print("You have not played any games")
+            if sys.version_info[0] < 3:
+                raw_input(Printer.continueText)
+            else:
+                input(Printer.continueText)
+        else:
+            print('')
+            print(Printer.stat1 + str(game.Game._totalGames))
+            print(Printer.stat2 + str(game.Game._totalWins))
+            print(Printer.stat3 + str(game.Game._totalGuesses))
+            print(Printer.stat4 + str(1.0*game.Game._totalGuesses/game.Game._totalGames))
+            print('')
+            if sys.version_info[0] < 3:
+                raw_input(Printer.continueText)
+            else:
+                input(Printer.continueText)
 
     def printTurn(self):
         print('a')
+
+
+def test():
+    import game
+    game1 = game.Game()
+    printer = Printer(game1)
+    printer.printMenu()
+    printer.printInstructions()
+    printer.printStats()
+    game1.guesses.append(('RGBW', (1,2)))
+    printer.printGame()
+
+
+if (__name__ == "__main__"):
+    test()

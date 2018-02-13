@@ -6,6 +6,8 @@ import random
 class Game:
     """docstring for Game."""
     _totalGames = 0
+    _totalWins = 0
+    _totalGuesses = 0
 
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game._totalGames += 1
@@ -33,6 +35,7 @@ class Game:
         if(blackPegs==4):
             self.didWin = True
         return blackPegs, whitePegs
+
     @staticmethod
     def validateGuess(codeGuess,self):
         import re
@@ -43,6 +46,7 @@ class Game:
             if (re.search(pattern, codeGuess[i])):
                 return (False)
         return (True)
+
     @staticmethod
     def generateSolution(self):
         codeString = ["","","",""]
