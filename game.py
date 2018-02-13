@@ -1,5 +1,6 @@
 from collections import Counter
 import printer
+import re
 import sys
 
 if sys.version_info[0] < 3:
@@ -30,22 +31,28 @@ class Game:
 
     @staticmethod
     def compareCodes(code1, code2):
-        # Finds the total amount of pegs cleverly
-        totalPegs = sum((Counter(code1) & Counter(code2)).values())
+        # Gets a count for each color in each code
+        code1ColorCount = Counter(code1)
+        code2ColorCount = Counter(code2)
+        # Gets a count for the colors in both
+        overlap = code1ColorCount & code2ColorCount
+        # Total pegs tot be shown
+        totalPegs = sum(overlap.values())
+        # Calculate number of black pegs
         blackPegs = 0
         for i in range(0, len(code1)):
             if (code1[i] == code2[i]):
                 blackPegs += 1
+        # Calculate number of white pegs
         whitePegs = totalPegs - blackPegs
         return blackPegs, whitePegs
 
-    def validateGuess(self, codeGuess):
-        if (len(codeGuess) != self.codeLength):
-            return (False)
-        for i in range(0, self.codeLength):
-            if codeGuess[i] not in self.symbolList:
-                return (False)
-        return (True)
+    def validateCode(self, code):
+        reString = ('[' + (''.join(self.symbolList)) + ']{'
+                    + str(self.codeLength) + '}\Z')
+        if re.match(reString, code):
+            return True
+        return False
 
     def endGame(self, didWin):
         self.didWin = didWin
@@ -81,7 +88,7 @@ class UserGame(Game):
 
     def makeGuess(self):
         codeGuess = string_input("Make a Guess:").upper()
-        while not self.validateGuess(codeGuess):
+        while not self.validateCode(codeGuess):
             codeGuess = string_input("Invalid Guess. Try again:").upper()
         blackPegs, whitePegs = Game.compareCodes(codeGuess, self.solution)
         self.guesses.append((codeGuess, (blackPegs, whitePegs)))
@@ -96,7 +103,7 @@ class ComputerGame(Game):
 
     def generateSolution(self):
         codeSolution = string_input("Enter a solution:").upper()
-        while not self.validateGuess(codeSolution):
+        while not self.validateCode(codeSolution):
             codeSolution = string_input("Invalid Code. Try again:").upper()
         self.solution = codeSolution
     #
@@ -104,12 +111,12 @@ class ComputerGame(Game):
 
 
 def test():
-    game = UserGame()
-    game.generateSolution()
-    print(game.validateGuess(game.solution))
-    print("Code Length: " + str(game.codeLength))
-    print("Max Guesses: " + str(game.maxGuesses))
-    print("Symbols: " + str(game.symbolList))
+    uGame = UserGame()
+    uGame.generateSolution()
+    print(uGame.validateCode(uGame.solution))
+    print("Code Length: " + str(uGame.codeLength))
+    print("Max Guesses: " + str(uGame.maxGuesses))
+    print("Symbols: " + str(uGame.symbolList))
 
 
 if (__name__ == "__main__"):

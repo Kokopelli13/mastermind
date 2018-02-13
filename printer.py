@@ -42,7 +42,7 @@ turns, otherwise the mastermind wins.
     stat3 = "Total number of guesses: "
     stat4 = "Average number of guesses per game: "
     # Board
-    boardTopBottom = "-" * 20
+    boardTopBottom = " " + ("-" * 19)
     boardSide = "|"
     whitePeg = "-"
     blackPeg = "+"
@@ -51,17 +51,20 @@ turns, otherwise the mastermind wins.
 
     def __init__(self, game):
         self.game = game
+        self.width = (4 * self.game.codeLength + 3)
+        Printer.boardTopBottom = " " + ("-" * self.width)
 
     @staticmethod
     def printMenu():
         print(Printer.menu)
 
-    # prints the game board using the guesses[] array from the gaem object
+    # prints the game board using the guesses[] array from the game object
     def printGame(self):
         # header
         print('Mastermind')
         print('Turn #' + str(len(self.game.guesses)))
         print('Colors: ' + str(self.game.symbolList))
+        print('Code Length: ' + str(self.game.codeLength))
         # top of the board
         print(' ' + Printer.boardTopBottom)
         # lines with guesses
@@ -77,12 +80,12 @@ turns, otherwise the mastermind wins.
                 sys.stdout.write(' ' + Printer.blackPeg)
             for i in range(0, pegs[1]):
                 sys.stdout.write(' ' + Printer.whitePeg)
-            for i in range(0, 4 - (pegs[0] + pegs[1])):
+            for i in range(0, self.game.codeLength - (pegs[0] + pegs[1])):
                 sys.stdout.write('  ')
             print(' ' + Printer.boardSide)
         # remaining blank lines
         for i in range(0, self.game.maxGuesses - len(self.game.guesses)):
-            print(' ' + Printer.boardSide + ' ' * 19 + Printer.boardSide)
+            print(' ' + Printer.boardSide + ' ' * self.width + Printer.boardSide)
         # board bottom
         print(' ' + Printer.boardTopBottom)
 

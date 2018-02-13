@@ -11,7 +11,7 @@ def main():
         if(choice == 1):
             printer.Printer.printInstructions()
         if(choice == 2):
-            currentGame = game.UserGame()
+            currentGame = game.UserGame(8, 20)
             playGame(currentGame)
         if(choice == 3):
             currentGame = game.ComputerGame()
@@ -25,7 +25,7 @@ def main():
 def mainMenu():
     printer.Printer.printMenu()
     ans = string_input('Pick an option: ')
-    while((not re.match('[12345]{1}', ans)) or len(ans) > 1):
+    while((not re.match('[12345]{1}\Z', ans))):
         ans = string_input('Please make a valid selection: ')
     return int(ans)
 
