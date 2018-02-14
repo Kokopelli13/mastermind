@@ -12,12 +12,14 @@ else:
 
 class Game:
     """docstring for Game."""
-    _totalGames = 0
-    _totalWins = 0
-    _totalGuesses = 0
+    _totalGamesHuman = 0
+    _totalWinsHuman = 0
+    _totalGuessesHuman = 0
+    _totalGamesPC = 0
+    _totalWinsPC = 0
+    _totalGuessesPC = 0
 
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
-        Game._totalGames += 1
         if symbolList is None:
             self.symbolList = ['R', 'G', 'B', 'W', 'Y', 'O']
         else:
@@ -56,13 +58,13 @@ class Game:
         return False
 
     def endGame(self, didWin):
-        raise NotImplementedError("Subclass must implement abstract method")
+        raise NotImplementedError(printer.Printer.subclassError)
 
     def generateSolution(self):
-        raise NotImplementedError("Subclass must implement abstract method")
+        raise NotImplementedError(printer.Printer.subclassError)
 
     def makeGuess(self):
-        raise NotImplementedError("Subclass must implement abstract method")
+        raise NotImplementedError(printer.Printer.subclassError)
 
 
 class UserGame(Game):
@@ -78,9 +80,15 @@ class UserGame(Game):
         self.solution = codeString
 
     def makeGuess(self):
-        codeGuess = string_input("Make a Guess:").upper()
+        Game._totalGuessesHuman += 1
+        codeGuess = string_input(printer.Printer.codeInputHuman).upper()
         while not self.validateCode(codeGuess):
-            codeGuess = string_input("Invalid Guess. Try again:").upper()
+            if(codeGuess == 'H'):
+                self.printer.printGame()
+                print(printer.Printer.hintText + self.solution[random.randint(0,self.codeLength - 1)])
+                codeGuess = string_input(printer.Printer.codeInputHuman).upper()
+            else:
+                codeGuess = string_input(printer.Printer.invalidInputHuman).upper()
         blackPegs, whitePegs = Game.compareCodes(codeGuess, self.solution)
         self.guesses.append((codeGuess, (blackPegs, whitePegs)))
         if blackPegs is self.codeLength:
@@ -89,11 +97,12 @@ class UserGame(Game):
 
     def endGame(self, didWin):
         self.didWin = didWin
+        Game._totalGamesHuman += 1
         if(didWin):
-            print("Congratulations! You Win!!")
+            print(printer.Printer.winTextHuman)
+            Game._totalWinsHuman += 1
         else:
-            print("You ran out of guesses...")
-            print("The correct code was: " + self.solution)
+            print(printer.Printer.loseTextHuman + self.solution)
             string_input(printer.Printer.continueText)
 
 
@@ -105,12 +114,13 @@ class ComputerGame(Game):
         self.guessSoFar = ""
 
     def generateSolution(self):
-        codeSolution = string_input("Enter a solution:").upper()
+        codeSolution = string_input(printer.Printer.codeInputPC).upper()
         while not self.validateCode(codeSolution):
-            codeSolution = string_input("Invalid Code. Try again:").upper()
+            codeSolution = string_input(printer.Printer.invalidInputPC).upper()
         self.solution = codeSolution
 
     def makeGuess(self):
+        Game._totalGuessesPC += 1
         if len(self.guessSoFar) < self.codeLength:
             guess = self.guessSoFar
             randVal = random.choice(self.possibleCode)
@@ -135,11 +145,12 @@ class ComputerGame(Game):
 
     def endGame(self, didWin):
         self.didWin = didWin
+        Game._totalGamesPC += 1
         if didWin:
-            print("The computer guessed your code!")
+            print(printer.Printer.winTextPC)
+            Game._totalWinsPC += 1
         else:
-            print("The computer ran out of guesses...")
-            print("The computer couldn't guess your code " + self.solution)
+            print(printer.Printer.loseTextPC + self.solution)
             string_input(printer.Printer.continueText)
 
 

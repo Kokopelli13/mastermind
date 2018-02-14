@@ -1,6 +1,7 @@
 import sys
 import game
 
+
 if sys.version_info[0] < 3:
     string_input = raw_input
 else:
@@ -16,7 +17,8 @@ class Printer:
 2) Play as code breaker
 3) Play as mastermind
 4) Game statistics
-5) Quit
+5) Reset statistics
+6) Quit
 """
     # Instructions
     instructions = """
@@ -37,17 +39,36 @@ correct color and location.
 turns, otherwise the mastermind wins.
 """
     # Stats
-    stat1 = "Total number of games played: "
-    stat2 = "Total number of games won: "
-    stat3 = "Total number of guesses: "
-    stat4 = "Average number of guesses per game: "
+    statHeaderHuman = "Games won as the code breaker: "
+    statHeaderPC = "Games won as the mastermind: "
+    stat1 = "  Total number of games played: "
+    stat2 = "  Total number of guesses: "
+    stat3 = "  Average number of guesses per game: "
+    statReset = "Statistics have been reset"
     # Board
     boardTopBottom = " " + ("-" * 19)
     boardSide = "|"
     whitePeg = "-"
     blackPeg = "+"
-    # Other
+    # Game
     continueText = "Press Enter to continue..."
+    winTextHuman = "Congratulations! You Win!!"
+    loseTextHuman = """You ran out of guesses...
+    The correct code was: """
+    winTextPC = "The computer guessed your code!"
+    loseTextPC = """The computer ran out of guesses...
+    The computer couldn't guess your code: """
+    hintText = "One of the colors is: "
+    # Input
+    codeInputHuman = """Type H for a hint
+Make a Guess: """
+    invalidInputHuman = "Invalid Guess. Try again: "
+    codeInputPC = "Enter a solution: "
+    invalidInputPC = "Invalid Code. Try again: "
+    # Other
+    menuInput = 'Pick an option: '
+    menuError = 'Please make a valid selection: '
+    subclassError = "Subclass must implement abstract method"
 
     def __init__(self, game):
         self.game = game
@@ -63,7 +84,7 @@ turns, otherwise the mastermind wins.
         # header
         print('Mastermind')
         print('Turn #' + str(len(self.game.guesses)))
-        print('Colors: ' + str(self.game.symbolList))
+        print('Colors: ' + ' '.join(map(str,self.game.symbolList)))
         print('Code Length: ' + str(self.game.codeLength))
         # top of the board
         print(' ' + Printer.boardTopBottom)
@@ -97,16 +118,28 @@ turns, otherwise the mastermind wins.
 
     @staticmethod
     def printStats():
-        if(game.Game._totalGames == 0):
+        if(game.Game._totalGamesHuman + game.Game._totalGamesPC == 0):
             print("You have not played any games")
             string_input(Printer.continueText)
         else:
             print('')
-            print(Printer.stat1 + str(game.Game._totalGames))
-            print(Printer.stat2 + str(game.Game._totalWins))
-            print(Printer.stat3 + str(game.Game._totalGuesses))
-            print(Printer.stat4 +
-                  str(1.0 * game.Game._totalGuesses / game.Game._totalGames))
+            print(Printer.statHeaderHuman + str(game.Game._totalWinsHuman))
+            print(Printer.stat1 + str(game.Game._totalGamesHuman))
+            print(Printer.stat2 + str(game.Game._totalGuessesHuman))
+            if(game.Game._totalGamesHuman == 0):
+                print(Printer.stat3 + '0.0')
+            else:
+                print(Printer.stat3 +
+                  str(1.0 * game.Game._totalGuessesHuman / game.Game._totalGamesHuman))
+            print('')
+            print(Printer.statHeaderPC + str(game.Game._totalWinsPC))
+            print(Printer.stat1 + str(game.Game._totalGamesPC))
+            print(Printer.stat2 + str(game.Game._totalGuessesPC))
+            if(game.Game._totalGamesPC == 0):
+                print(Printer.stat3 + '0.0')
+            else:
+                print(Printer.stat3 +
+                  str(1.0 * game.Game._totalGuessesPC / game.Game._totalGamesPC))
             print('')
             string_input(Printer.continueText)
 
