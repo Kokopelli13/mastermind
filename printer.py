@@ -85,7 +85,8 @@ turns, otherwise the mastermind wins.
             print(' ' + Printer.boardSide)
         # remaining blank lines
         for i in range(0, self.game.maxGuesses - len(self.game.guesses)):
-            print(' ' + Printer.boardSide + ' ' * self.width + Printer.boardSide)
+            print(' ' + Printer.boardSide +
+                  ' ' * self.width + Printer.boardSide)
         # board bottom
         print(' ' + Printer.boardTopBottom)
 

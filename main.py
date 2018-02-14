@@ -11,7 +11,7 @@ def main():
         if(choice == 1):
             printer.Printer.printInstructions()
         if(choice == 2):
-            currentGame = game.UserGame(8, 20)
+            currentGame = game.UserGame()
             playGame(currentGame)
         if(choice == 3):
             currentGame = game.ComputerGame()

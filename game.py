@@ -1,5 +1,6 @@
 from collections import Counter
 import printer
+import random
 import re
 import sys
 
@@ -17,7 +18,7 @@ class Game:
 
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game._totalGames += 1
-        if (symbolList is None):
+        if symbolList is None:
             self.symbolList = ['R', 'G', 'B', 'W', 'Y', 'O']
         else:
             self.symbolList = symbolList
@@ -55,16 +56,7 @@ class Game:
         return False
 
     def endGame(self, didWin):
-        self.didWin = didWin
-        if didWin:
-            Game._totalWins += 1
-        Game._totalGuesses += len(self.guesses)
-        if(didWin):
-            print("Congratulations! You Win!!")
-        else:
-            print("You ran out of guesses...")
-            print("The correct code was: " + self.solution)
-        string_input(printer.Printer.continueText)
+        raise NotImplementedError("Subclass must implement abstract method")
 
     def generateSolution(self):
         raise NotImplementedError("Subclass must implement abstract method")
@@ -79,7 +71,6 @@ class UserGame(Game):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
 
     def generateSolution(self):
-        import random
         codeString = ""
         for i in range(0, self.codeLength):
             codeString += random.choice(self.symbolList)
@@ -94,20 +85,62 @@ class UserGame(Game):
         self.guesses.append((codeGuess, (blackPegs, whitePegs)))
         if blackPegs is self.codeLength:
             return True
+        return False
+
+    def endGame(self, didWin):
+        self.didWin = didWin
+        if(didWin):
+            print("Congratulations! You Win!!")
+        else:
+            print("You ran out of guesses...")
+            print("The correct code was: " + self.solution)
+            string_input(printer.Printer.continueText)
 
 
 class ComputerGame(Game):
     """docstring for ComputerGame."""
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
+        self.possibleCode = self.symbolList[:]
+        self.guessSoFar = ""
 
     def generateSolution(self):
         codeSolution = string_input("Enter a solution:").upper()
         while not self.validateCode(codeSolution):
             codeSolution = string_input("Invalid Code. Try again:").upper()
         self.solution = codeSolution
-    #
-    # def makeGuess():
+
+    def makeGuess(self):
+        if len(self.guessSoFar) < self.codeLength:
+            guess = self.guessSoFar
+            randVal = random.choice(self.possibleCode)
+            guess += randVal * (self.codeLength - len(self.guessSoFar))
+            self.possibleCode.remove(randVal)
+            blackPegs, whitePegs = self.compareCodes(self.solution, guess)
+            self.guesses.append((guess, (blackPegs, whitePegs)))
+            if blackPegs == self.codeLength:
+                return True
+            sumTicks = blackPegs + whitePegs
+            self.guessSoFar += randVal * (sumTicks - len(self.guessSoFar))
+        else:
+            guessList = list(self.guessSoFar)
+            random.shuffle(guessList)
+            guess = ''.join(guessList)
+            blackPegs, whitePegs = self.compareCodes(guess, self.solution)
+            self.guesses.append((guess, (blackPegs, whitePegs)))
+            if blackPegs == self.codeLength:
+                return True
+        string_input(printer.Printer.continueText)
+        return False
+
+    def endGame(self, didWin):
+        self.didWin = didWin
+        if didWin:
+            print("The computer guessed your code!")
+        else:
+            print("The computer ran out of guesses...")
+            print("The computer couldn't guess your code " + self.solution)
+            string_input(printer.Printer.continueText)
 
 
 def test():
