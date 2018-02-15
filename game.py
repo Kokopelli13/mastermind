@@ -22,6 +22,7 @@ class Game:
     _totalGuessesPC = 0
 
     # init new game
+    #Defaults to game of 10 guesses, list of RGBWYO and 4-digit code
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         if symbolList is None:
             self.symbolList = ['R', 'G', 'B', 'W', 'Y', 'O']
@@ -90,6 +91,7 @@ class UserGame(Game):
     def makeGuess(self):
         Game._totalGuessesHuman += 1
         codeGuess = string_input(printer.Printer.codeInputHuman).upper()
+        #Validates code, if H print a hint otherwise reprompt
         while not self.validateCode(codeGuess):
             if(codeGuess == 'H'):
                 self.printer.printGame()
@@ -97,8 +99,11 @@ class UserGame(Game):
                 codeGuess = string_input(printer.Printer.codeInputHuman).upper()
             else:
                 codeGuess = string_input(printer.Printer.invalidInputHuman).upper()
+        #Compares the user code to the solution and return white/black pegs
         blackPegs, whitePegs = Game.compareCodes(codeGuess, self.solution)
+        #Adds the guessed string and corresponding white and black pegs to the total list
         self.guesses.append((codeGuess, (blackPegs, whitePegs)))
+        #If the code is correct return true to end the current game
         if blackPegs is self.codeLength:
             return True
         return False
@@ -124,6 +129,7 @@ class ComputerGame(Game):
 
     # Get the solution from the user
     def generateSolution(self):
+        #Reprompts until valid input
         codeSolution = string_input(printer.Printer.codeInputPC).upper()
         while not self.validateCode(codeSolution):
             codeSolution = string_input(printer.Printer.invalidInputPC).upper()
@@ -131,19 +137,28 @@ class ComputerGame(Game):
 
     # Take a guess as the computer
     def makeGuess(self):
+        #Increments totalguesses by the PC
         Game._totalGuessesPC += 1
+        #If the guess hasnt figured out all the colors yet
         if len(self.guessSoFar) < self.codeLength:
             guess = self.guessSoFar
+            #Creates a random value and populates the correct portion of the array
             randVal = random.choice(self.possibleCode)
             guess += randVal * (self.codeLength - len(self.guessSoFar))
+            #Removes the last random value as it will not be guessed again
             self.possibleCode.remove(randVal)
+            #Compares the code if black is equal to the code length then the computer guessed it
             blackPegs, whitePegs = self.compareCodes(self.solution, guess)
             self.guesses.append((guess, (blackPegs, whitePegs)))
             if blackPegs == self.codeLength:
                 return True
+            #Sums the ticks adding the correct amount to the guess so far
+            #IE; two ticks on RRRR would add RR to the guess so far
             sumTicks = blackPegs + whitePegs
             self.guessSoFar += randVal * (sumTicks - len(self.guessSoFar))
+        #When guess has a list of all the colors
         else:
+            #Shuffles the guess and then compares, if all black computer won
             guessList = list(self.guessSoFar)
             random.shuffle(guessList)
             guess = ''.join(guessList)

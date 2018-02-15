@@ -9,6 +9,7 @@ import os
 def main():
     loadStats()
     hasNotQuit = True
+    #Takes a choice validates it and does the proper function, 6 to quit
     while(hasNotQuit):
         choice = mainMenu()
         if(choice == 1):
@@ -32,6 +33,7 @@ def main():
 def mainMenu():
     printer.Printer.printMenu()
     ans = string_input(printer.Printer.menuInput)
+    #Only valid input is 1-6 reprompts otherwise
     while((not re.match('[123456]{1}\Z', ans))):
         ans = string_input(printer.Printer.menuError)
     return int(ans)
@@ -39,8 +41,10 @@ def mainMenu():
 
 # Game loop logic
 def playGame(currentGame):
+    #Generates the solution accordingly whether you are making or guessing the code
     didWin = False
     currentGame.generateSolution()
+    #loops through until max guesses is hit or someone wins
     for x in range(currentGame.maxGuesses):
         currentGame.printer.printGame()
         didWin = currentGame.makeGuess()
