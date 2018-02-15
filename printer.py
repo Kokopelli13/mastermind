@@ -7,7 +7,7 @@ if sys.version_info[0] < 3:
 else:
     string_input = input
 
-
+#Printer class designed by Joe
 class Printer:
     """docstring"""
 
@@ -69,7 +69,7 @@ Make a Guess: """
     menuInput = 'Pick an option: '
     menuError = 'Please make a valid selection: '
     subclassError = "Subclass must implement abstract method"
-
+    #printer constructor
     def __init__(self, game):
         self.game = game
         self.width = (4 * self.game.codeLength + 3)
@@ -116,12 +116,14 @@ Make a Guess: """
         print(Printer.instructions)
         string_input(Printer.continueText)
 
+    #Grabs the stats of the user
     @staticmethod
     def printStats():
         if(game.Game._totalGamesHuman + game.Game._totalGamesPC == 0):
             print("You have not played any games")
             string_input(Printer.continueText)
         else:
+            #Calculates the total games and total fguesses, how long it takes you to guess
             print('')
             print(Printer.statHeaderHuman + str(game.Game._totalWinsHuman))
             print(Printer.stat1 + str(game.Game._totalGamesHuman))
