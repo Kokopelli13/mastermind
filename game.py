@@ -4,21 +4,24 @@ import random
 import re
 import sys
 
+# Use the correct input for python 2 and 3
 if sys.version_info[0] < 3:
     string_input = raw_input
 else:
     string_input = input
 
-#Game class designed by alex
+
 class Game:
-    """docstring for Game."""
+    """The game object that holds all of the gameplay logic and vars"""
+    # global vars (stats)
     _totalGamesHuman = 0
     _totalWinsHuman = 0
     _totalGuessesHuman = 0
     _totalGamesPC = 0
     _totalWinsPC = 0
     _totalGuessesPC = 0
-    #Constructor defaulting to the base attributes of the game, 10 guesses, 4 code length
+
+    # init new game
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         if symbolList is None:
             self.symbolList = ['R', 'G', 'B', 'W', 'Y', 'O']
@@ -32,7 +35,7 @@ class Game:
         self.didWin = False
         self.printer = printer.Printer(self)
 
-    #Compare codes designed by Alex
+    # compare two codes and get number of white & black pegs
     @staticmethod
     def compareCodes(code1, code2):
         # Gets a count for each color in each code
@@ -51,6 +54,7 @@ class Game:
         whitePegs = totalPegs - blackPegs
         return blackPegs, whitePegs
 
+    # validate that a given code is in the solution space
     def validateCode(self, code):
         reString = ('[' + (''.join(self.symbolList)) + ']{'
                     + str(self.codeLength) + '}\Z')
@@ -58,6 +62,7 @@ class Game:
             return True
         return False
 
+    #these must be implemented by Game's children
     def endGame(self, didWin):
         raise NotImplementedError(printer.Printer.subclassError)
 
@@ -67,13 +72,13 @@ class Game:
     def makeGuess(self):
         raise NotImplementedError(printer.Printer.subclassError)
 
-#User Game designed by alex
+
 class UserGame(Game):
-    """docstring for UserGame."""
+    """Child of the Game class for user games (codebreaker mode)."""
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
 
-    #generates the code for user to guess
+    # Generate a random solution
     def generateSolution(self):
         codeString = ""
         for i in range(0, self.codeLength):
@@ -81,27 +86,24 @@ class UserGame(Game):
         # print(codeString)
         self.solution = codeString
 
-    #Accepts the valid user input
+    # Logic for user making a guess
     def makeGuess(self):
         Game._totalGuessesHuman += 1
         codeGuess = string_input(printer.Printer.codeInputHuman).upper()
         while not self.validateCode(codeGuess):
-            #Looking for a hint
             if(codeGuess == 'H'):
                 self.printer.printGame()
                 print(printer.Printer.hintText + self.solution[random.randint(0,self.codeLength - 1)])
                 codeGuess = string_input(printer.Printer.codeInputHuman).upper()
-            #Invalid input
             else:
                 codeGuess = string_input(printer.Printer.invalidInputHuman).upper()
-        #Calculates teh white and black pegs and appends the guesses for use on game board
         blackPegs, whitePegs = Game.compareCodes(codeGuess, self.solution)
         self.guesses.append((codeGuess, (blackPegs, whitePegs)))
-        #True if they won the game
         if blackPegs is self.codeLength:
             return True
         return False
-    #Closes the game out when won
+
+    # Check to see if the game has been won
     def endGame(self, didWin):
         self.didWin = didWin
         Game._totalGamesHuman += 1
@@ -112,20 +114,22 @@ class UserGame(Game):
             print(printer.Printer.loseTextHuman + self.solution)
             string_input(printer.Printer.continueText)
 
-#COmputer game class de3signed by Alex
+
 class ComputerGame(Game):
-    """docstring for ComputerGame."""
+    """Child of the Game class for computer games (mastermind mode)."""
     def __init__(self, codeLength=4, maxGuesses=10, symbolList=None):
         Game.__init__(self, codeLength, maxGuesses, symbolList)
         self.possibleCode = self.symbolList[:]
         self.guessSoFar = ""
-    #Accepts the valid input as a solution
+
+    # Get the solution from the user
     def generateSolution(self):
         codeSolution = string_input(printer.Printer.codeInputPC).upper()
         while not self.validateCode(codeSolution):
             codeSolution = string_input(printer.Printer.invalidInputPC).upper()
         self.solution = codeSolution
-    #Computer guessing code method
+
+    # Take a guess as the computer
     def makeGuess(self):
         Game._totalGuessesPC += 1
         if len(self.guessSoFar) < self.codeLength:
@@ -149,7 +153,8 @@ class ComputerGame(Game):
                 return True
         string_input(printer.Printer.continueText)
         return False
-    #End game
+
+    # Check if the game is over
     def endGame(self, didWin):
         self.didWin = didWin
         Game._totalGamesPC += 1
@@ -161,6 +166,7 @@ class ComputerGame(Game):
             string_input(printer.Printer.continueText)
 
 
+# self test
 def test():
     uGame = UserGame()
     uGame.generateSolution()

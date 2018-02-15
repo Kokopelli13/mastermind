@@ -5,11 +5,10 @@ import sys
 import pickle
 import os
 
-#MAin loop designed by Joe
+# Main function, contains the main menu loop
 def main():
     loadStats()
     hasNotQuit = True
-    #Loops through printing proper text depending on input, 6 to quit
     while(hasNotQuit):
         choice = mainMenu()
         if(choice == 1):
@@ -28,17 +27,17 @@ def main():
             saveStats()
             hasNotQuit = False
 
-#Designed by Joe
+
+# Prints the menu and gets input from the user
 def mainMenu():
-    #Returns invalid if answer is not 1-6 then returns selection on proper input
     printer.Printer.printMenu()
     ans = string_input(printer.Printer.menuInput)
     while((not re.match('[123456]{1}\Z', ans))):
         ans = string_input(printer.Printer.menuError)
     return int(ans)
 
-#Designed by Alex
-#loops through until the fame was won or max guesses happened
+
+# Game loop logic
 def playGame(currentGame):
     didWin = False
     currentGame.generateSolution()
@@ -50,12 +49,14 @@ def playGame(currentGame):
     currentGame.printer.printGame()
     currentGame.endGame(didWin)
 
-#Saves the stats to an external file for later use
+
+# pickle the stats and save them to a file
 def saveStats():
     stats = [game.Game._totalGamesHuman, game.Game._totalWinsHuman, game.Game._totalGuessesHuman, game.Game._totalGamesPC, game.Game._totalWinsPC, game.Game._totalGuessesPC]
     pickle.dump(stats, open('savedStats.p', 'wb'))
 
-#Loads the stats from the external file and prints them accordingly
+
+# try and load saved stats from a pickled file
 def loadStats():
     if(os.path.exists('savedStats.p')):
         stats = pickle.load(open('savedStats.p', 'rb'))
@@ -66,7 +67,8 @@ def loadStats():
         game.Game._totalWinsPC = stats[4]
         game.Game._totalGuessesPC = stats[5]
 
-#Resets the stats
+
+# reset all the game stats to 0
 def resetStats():
     game.Game._totalGamesHuman = 0
     game.Game._totalWinsHuman = 0
@@ -78,6 +80,7 @@ def resetStats():
 
 
 if (__name__ == "__main__"):
+    # Use the correct input for python 2 and 3
     if sys.version_info[0] < 3:
         string_input = raw_input
     else:
