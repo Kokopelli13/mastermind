@@ -1,7 +1,7 @@
 import sys
 import game
 
-
+# Use the correct input for python 2 and 3
 if sys.version_info[0] < 3:
     string_input = raw_input
 else:
@@ -9,7 +9,7 @@ else:
 
 
 class Printer:
-    """docstring"""
+    """Prints game components to the terminal"""
 
     # Menu
     menu = """
@@ -70,6 +70,7 @@ Make a Guess: """
     menuError = 'Please make a valid selection: '
     subclassError = "Subclass must implement abstract method"
 
+    # Constructor
     def __init__(self, game):
         self.game = game
         self.width = (4 * self.game.codeLength + 3)
@@ -116,25 +117,32 @@ Make a Guess: """
         print(Printer.instructions)
         string_input(Printer.continueText)
 
+    # prints game stats
     @staticmethod
     def printStats():
+        # Let them know if they haven't played yet
         if(game.Game._totalGamesHuman + game.Game._totalGamesPC == 0):
             print("You have not played any games")
             string_input(Printer.continueText)
         else:
+            # Else print out the stats
+            # Codebreaker stats
             print('')
             print(Printer.statHeaderHuman + str(game.Game._totalWinsHuman))
             print(Printer.stat1 + str(game.Game._totalGamesHuman))
             print(Printer.stat2 + str(game.Game._totalGuessesHuman))
+            # avoid divide by zero
             if(game.Game._totalGamesHuman == 0):
                 print(Printer.stat3 + '0.0')
             else:
                 print(Printer.stat3 +
                   str(1.0 * game.Game._totalGuessesHuman / game.Game._totalGamesHuman))
+            # Mastermind stats
             print('')
             print(Printer.statHeaderPC + str(game.Game._totalWinsPC))
             print(Printer.stat1 + str(game.Game._totalGamesPC))
             print(Printer.stat2 + str(game.Game._totalGuessesPC))
+            # avoid divide by zero
             if(game.Game._totalGamesPC == 0):
                 print(Printer.stat3 + '0.0')
             else:
@@ -143,10 +151,7 @@ Make a Guess: """
             print('')
             string_input(Printer.continueText)
 
-    def printTurn(self):
-        print('a')
-
-
+# self test
 def test():
     import game
     game1 = game.Game()
